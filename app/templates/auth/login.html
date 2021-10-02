@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>login</title>
+</head>
+<body>
+	<form method="post">
+		<label for="username">Username:</label><br>
+		<input type="text" id="username" name="username"><br>
+
+		<label for="password">Password:</label><br>
+		<input type="text" name="password" id="password"><br>
+
+		<input type="submit" value="Login">
+	</form>
+
+	<br>
+	{% for message in get_flashed_messages() %}
+		<div class="flash" style="color: red;">{{ message }}</div>
+	{% endfor %}
+
+</body>
+</html>

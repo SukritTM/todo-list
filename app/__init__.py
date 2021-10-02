@@ -20,6 +20,9 @@ def create_app():
 	from . import db
 	db.init_app(app)
 
+	from .import auth
+	app.register_blueprint(auth.bp)
+
 	@app.route('/')
 	def say_hello():
 		return '<h1>hello world</h1>'
