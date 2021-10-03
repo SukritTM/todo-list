@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>home</title>
+</head>
+<body>
+	<header>
+		<a href="{{ url_for('auth.logout') }}">logout</a>
+	</header>
+	<h2>Todo lists</h2>
+	{% if todolists|length > 0 %}
+		{% for lis in todolists %}
+			<a href="{{ url_for('pages.todo', tid=lis['id']) }}">{{ lis['name'] }}<br>
+		{% endfor %}
+	{% else %}
+		You have no todo lists
+	{% endif %}
+
+</body>
+</html>

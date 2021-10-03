@@ -5,6 +5,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import redirect
 from app.db import get_db
 
+import functools
+
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -67,27 +69,37 @@ def login():
 		if error is None:
 			session.clear()
 			session['user-id'] = user['uid']
+			return redirect(url_for('pages.home'))
 		
 		else:
 			flash(error)
 			return render_template('auth/login.html')
 
-		# return redirect(url_for('mainpage.home'))
-		flash('Logged in!')
-		return render_template('auth/login.html')
 	
 	else:
 		return render_template('auth/login.html')
 
 
-bp.route('/logout')
+@bp.route('/logout', methods = ('GET',))
 def logout():
 	session.clear()
 	return redirect(url_for('auth.login'))
 
+@bp.before_app_request
+def load_user():
+	user_id = session.get('user-id')
+	
+	if not user_id:
+		g.user = None
+	else:
+		g.user = get_db().execute(
+			'SELECT * FROM user WHERE uid = ?', (user_id,)
+		).fetchone() 
+
 
 # Wrapper to ensure login
 def login_required(func):
+	@functools.wraps(func)
 	def wrap(*args, **kwargs):
 		if g.user is None:
 			return redirect(url_for('auth.login'))

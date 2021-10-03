@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>todo</title>
+</head>
+<body>
+	<h2>{{ todolist.name }}</h2>
+	{% if todolist|length > 0 %}
+		{% for item in todolist %}
+			{{ lis.content }}<br>
+		{% endfor %}
+	{% else %}
+		This list is empty
+	{% endif %}
+
+</body>
+</html>

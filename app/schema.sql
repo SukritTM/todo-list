@@ -7,8 +7,9 @@ CREATE TABLE user (
 	pass TEXT NOT NULL
 );
 
-CREATE TABLE form (
-	fid INTEGER PRIMARY KEY,
-	uid INTEGER
+CREATE TABLE todo (
+	tid INTEGER PRIMARY KEY,
+	uid INTEGER,
+	FOREIGN KEY (uid) REFERENCES user(uid)
 );
 
