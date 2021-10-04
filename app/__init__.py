@@ -1,6 +1,8 @@
-from flask import Flask
+from flask import Flask, redirect
 
 import os
+
+from flask.helpers import url_for
 
 from app.db import init_db_command
 
@@ -32,6 +34,6 @@ def create_app():
 
 	@app.route('/')
 	def say_hello():
-		return '<h1>hello world</h1>'
+		return redirect(url_for('pages.home'))
 
 	return app
