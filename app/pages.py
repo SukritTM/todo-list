@@ -1,4 +1,5 @@
-from flask import Blueprint, g, render_template, request, session, url_for
+from os import remove
+from flask import Blueprint, g, render_template, request, session, url_for, flash
 from werkzeug.utils import redirect
 from app.auth import login_required
 
@@ -19,16 +20,34 @@ def home():
 
 	
 	if request.method == 'POST':
-		listid = todolists.store_new(request.form['name']).id	
-		db.execute(
-			'INSERT INTO todo VALUES (?, ?)',
-			(str(listid), str(userid))
-		)
-		db.commit()
-		commit_todos()
-
-	
 		
+		print(request.form['which'])
+
+		if request.form['which'] == 'add':
+			listid = todolists.store_new(request.form['name']).id	
+			db.execute(
+				'INSERT INTO todo VALUES (?, ?)',
+				(str(listid), str(userid))
+			)
+			db.commit()
+			commit_todos()
+
+		if request.form['which'] == 'delete':
+			todoname = request.form['name']
+			todolist = todolists.findbyname(todoname)
+			
+			if todolist is None:
+				flash('No such list exists')
+			
+			else:
+				db.execute(
+					'DELETE FROM todo WHERE tid = ?',
+					(str(todolist.id),)
+				)
+				del todolist
+				db.commit()
+				commit_todos()
+			
 
 	todoids = db.execute(
 		'''
@@ -43,8 +62,6 @@ def home():
 	tododictlist = []
 	for id in todoids:
 		tododictlist.append(todolists.find(id[0]).as_dict())
-	
-	print(todoids)
 	
 	
 	
@@ -69,9 +86,21 @@ def todo(tid):
 	todolist = todolists.find(tid)
 
 	if request.method == 'POST':
-		todolist.add_item(request.form['add'])
-		
-		commit_todos()
 
+		if request.form['which'] == 'add':
+			todolist.add_item(request.form['name'])			
+			commit_todos()
+		
+		if request.form['which'] == 'delete':
+			itemname = request.form['name']
+			
+			print(todolist)
+			item = todolist.finditembyname(itemname)
+			print(item.content)
+
+			todolist.remove_item(item.itemid)
+
+			print(todolist)
+			commit_todos()
 
 	return render_template('pages/todo.html', todolist = todolist.as_list())

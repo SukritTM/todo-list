@@ -4,7 +4,7 @@ from flask.cli import with_appcontext
 import click
 import pickle
 
-class TodoItem:
+class TodoItem():
 	def __init__(self, content, itemid):
 		self.itemid = itemid
 		self.content = content
@@ -21,31 +21,33 @@ class TodoList():
 		self.__items.append(TodoItem(content, len(self.__items)+1))
 	
 	def remove_item(self, key):
-		if type(key) == int:
-			for item in self.__items:
-				if item.itemid == key:
-					del item
-				else:
-					raise KeyError('Item does not exist')
+		for item in self.__items:
+			if item.itemid == key:
+				self.__items.remove(item)
+				return None
+		
+		raise KeyError('Item does not exist')
 
-		else:
-			raise TypeError('Key must be an integer')
 
 	def __str__(self) -> str:
 		return str(self.__items)
 
 	
-	def find_item(self, key):
-		if type(key) == int:
-			for item in self.__items:
-				if item.itemid == key:
-					return item
-				else:
-					raise KeyError('Item does not exist')
+	def finditem(self, key):
+		for item in self.__items:
+			if item.itemid == key:
+				return item
+			
+		raise KeyError('Item does not exist')
 
-		else:
-			raise TypeError('Key must be an integer')
 	
+	def finditembyname(self, name):
+			for item in self.__items:
+				if item.content == name:
+					return item
+			
+			return None
+
 	def as_dict(self):
 		return {'id': self.id, 'name': self.name}
 	

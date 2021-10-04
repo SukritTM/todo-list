@@ -18,8 +18,15 @@
 
 	<br>
 	<form method="POST">
-		<input type="text" name="add" id="add">&nbsp;
+		<input type="text" name="name" id="name">&nbsp;
+		<input type="hidden" name="which" id="which" value="add">
 		<input type="submit" value="Add New">
+	</form>
+
+	<form method="POST">
+		<input type="text" name="name" id="name">&nbsp;
+		<input type="hidden" name="which" id="which" value="delete">
+		<input type="submit" value="Delete">
 	</form>
 
 </body>
