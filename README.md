@@ -13,7 +13,9 @@ At this stage, you may prefer to start a python virtual environment before insta
 To create and start a virtual environment with the 'venv' module, first, open a terminal and navigate to the root folder of this repository.
 
 To create a virtual environment with name 'your-env', type:
+
 `python -m venv your-env`
+
 To start this env, type:
 
 ###### (cmd)
