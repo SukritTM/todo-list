@@ -32,6 +32,15 @@ Now we will install dependencies. Start your virtual environment if you have one
 `python -m pip install -r requirements.txt`
 
 #### Step 4
+The app's data storage needs to be initialised. To do this, type:
+
+```
+flask init-db
+flask init-todos
+```
+
+
+#### Step 5
 And finally, to run the application, type:
 
 `flask run`
