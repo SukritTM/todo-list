@@ -16,8 +16,10 @@
 		<label for="confirm">Confirm password:</label><br>
 		<input type="text" name="confirm" id="confirm"><br>
 
-		<input type="submit" value="Register">
+		<input type="submit" value="Register"><br>
 	</form>
+
+	Already have an account? <a href="{{ url_for('auth.login') }}">login here</a>
 
 	<br>
 	{% for message in get_flashed_messages() %}

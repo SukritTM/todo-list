@@ -6,14 +6,21 @@
 	<title>todo</title>
 </head>
 <body>
+	<header><a href="{{ url_for('pages.home') }}">back</a></header>
 	<h2>{{ todolist.name }}</h2>
 	{% if todolist|length > 0 %}
 		{% for item in todolist %}
-			{{ lis.content }}<br>
+			{{ item.content }}<br>
 		{% endfor %}
 	{% else %}
-		This list is empty
+		This list is empty<br><br>
 	{% endif %}
+
+	<br>
+	<form method="POST">
+		<input type="text" name="add" id="add">&nbsp;
+		<input type="submit" value="Add New">
+	</form>
 
 </body>
 </html>

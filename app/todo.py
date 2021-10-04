@@ -10,18 +10,19 @@ class TodoItem:
 		self.content = content
 		self.completed = False
 
-class TodoList(list):
+class TodoList():
 	def __init__(self, id, name):
 		self.id = id
 		self.name = name
+		self.__items = list()
 		
 	
 	def add_item(self, content):
-		self.append(TodoItem(content, len(self.todo)+1))
+		self.__items.append(TodoItem(content, len(self.__items)+1))
 	
 	def remove_item(self, key):
 		if type(key) == int:
-			for item in self:
+			for item in self.__items:
 				if item.itemid == key:
 					del item
 				else:
@@ -29,10 +30,14 @@ class TodoList(list):
 
 		else:
 			raise TypeError('Key must be an integer')
+
+	def __str__(self) -> str:
+		return str(self.__items)
+
 	
 	def find_item(self, key):
 		if type(key) == int:
-			for item in self:
+			for item in self.__items:
 				if item.itemid == key:
 					return item
 				else:
@@ -43,36 +48,56 @@ class TodoList(list):
 	
 	def as_dict(self):
 		return {'id': self.id, 'name': self.name}
+	
+	def __len__(self):
+		return len(self.__items)
+	
+	def as_list(self):
+		return self.__items
 
-# unused rn
-class AllTodos(list):
+
+
+class AllTodos():
 	'''
 	TO BE USED AS A SINGLETON ONLY
 	Do not instantiate this class. Instead, use the returned object from the get_todos() method
 	'''
 	def __init__(self):
-		super().__init__()
 
-		length = 0
+		self.length = 0
+		self.__items = list()
 	
 	def append(self, todo):
 		if type(todo) != TodoList:
 			raise TypeError('Object only supports arguments of type \'TodoList\'')
 		
-		super().append(todo)
+		self.__items.append(todo)
+		self.length += 1
 	
 	def find(self, id):
-		for todo in self:
+		for todo in self.__items:
 			if todo.id == id:
 				return todo
 		
 		return None
 	
+	def findbyname(self, name):
+		for todo in self.__items:
+			if todo.name == name:
+				return todo
+		
+		return None
+
 	def store_new(self, name):
-		lis = TodoList(len(self), name)
+		lis = TodoList(self.length+1, name)
 
 		self.append(lis)
+		self.length += 1
+
+		return lis
 	
+
+
 
 
 
@@ -88,14 +113,12 @@ def close_todos(e):
 
 def init_todos():
 	todos_list = AllTodos() # The only place it should ever be instantiated
-	todos_list.append(TodoList(1, 'list1'))
-	todos_list[0].add_item('Todolist')
 	
 	file = open(current_app.config['LISTDATA'], 'wb')
 	pickle.dump(todos_list, file)
 	file.close()
 
-def commit_todos(e):
+def commit_todos():
 	todos_list = get_todos()
 
 	file = open(current_app.config['LISTDATA'], 'wb')
@@ -109,6 +132,5 @@ def init_todos_command():
 	click.echo('Todos initialised!')
 
 def init_app(app):
-	app.teardown_appcontext(commit_todos)
 	app.teardown_appcontext(close_todos)
 	app.cli.add_command(init_todos_command)

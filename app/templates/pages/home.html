@@ -12,11 +12,16 @@
 	<h2>Todo lists</h2>
 	{% if todolists|length > 0 %}
 		{% for lis in todolists %}
-			<a href="{{ url_for('pages.todo', tid=lis['id']) }}">{{ lis['name'] }}<br>
+			<a href="{{ url_for('pages.todo', tid=lis['id']) }}">{{ lis['name'] }}</a><br>
 		{% endfor %}
 	{% else %}
-		You have no todo lists
+		You have no todo lists<br>
 	{% endif %}
+	<br>
+	<form method="POST">
+		<input type="text" name="name" id="name">&nbsp;
+		<input type="submit" value="Create New">
+	</form>
 
 </body>
 </html>

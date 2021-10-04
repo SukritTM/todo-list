@@ -8,35 +8,52 @@ from app.todo import *
 bp = Blueprint('pages', __name__, url_prefix='/')
 
 
-@bp.route('/home', methods = ['GET'])
+@bp.route('/home', methods = ('GET', 'POST'))
 @login_required
 def home():
-	if request.method == 'GET':
-		db = get_db()
-		todos = get_todos()
+	
+	db = get_db()
+	todolists = get_todos()
 
+	userid = g.user['uid']
 
-		userid = g.user['uid']
+	
+	if request.method == 'POST':
+		listid = todolists.store_new(request.form['name']).id	
+		db.execute(
+			'INSERT INTO todo VALUES (?, ?)',
+			(str(listid), str(userid))
+		)
+		db.commit()
+		commit_todos()
 
-		todoids = db.execute(
-			'''
-			SELECT tid
-			FROM user u INNER JOIN todo t
-			ON u.uid = t.uid
-			WHERE tid = ?
-			''',
-			(userid,)
-		).fetchall()
-
-		todolists = []
-		for id in todoids:
-			todolists.append(todos.find(id[0]).as_dict())
+	
 		
-		return render_template('pages/home.html', todolists = todolists)
 
-@bp.route('/todo/<int:tid>', methods = ('GET',))
+	todoids = db.execute(
+		'''
+		SELECT tid
+		FROM user u INNER JOIN todo t
+		ON u.uid = t.uid
+		WHERE t.uid = ?
+		''',
+		(userid,)
+	).fetchall()
+
+	tododictlist = []
+	for id in todoids:
+		tododictlist.append(todolists.find(id[0]).as_dict())
+	
+	print(todoids)
+	
+	
+	
+	return render_template('pages/home.html', todolists = tododictlist)
+
+@bp.route('/todo/<int:tid>', methods = ('GET', 'POST'))
 @login_required
 def todo(tid):
+
 	uid = g.user['uid']
 
 	belongs = get_db().execute(
@@ -46,7 +63,15 @@ def todo(tid):
 
 	if not belongs:
 		return '', 403
-	
-	todolist = get_todos().find(tid)
 
-	return render_template('pages/todo.html', todolist = todolist)
+	todolists = get_todos()
+
+	todolist = todolists.find(tid)
+
+	if request.method == 'POST':
+		todolist.add_item(request.form['add'])
+		
+		commit_todos()
+
+
+	return render_template('pages/todo.html', todolist = todolist.as_list())
