@@ -34,7 +34,7 @@ And finally, to run the application, type:
 
 `flask run`
 
-Visit (http://localhost:5000) to see the application run
+Visit http://localhost:5000 to see the application run
 
 Don't hesitate to contact me in case of any difficulties :)
 
